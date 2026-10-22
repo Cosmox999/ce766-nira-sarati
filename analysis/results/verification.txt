@@ -1,0 +1,2 @@
+PASS: independent raw-CSV checks of counts, rainfall, seasonal metrics and longest spell.
+PASS: independent September 2003 SPI transformation and gamma MLE score checks.

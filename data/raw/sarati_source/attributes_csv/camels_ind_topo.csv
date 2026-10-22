@@ -1,0 +1,2 @@
+gauge_id,cwc_lat,cwc_lon,ghi_lat,ghi_lon,elev_mean,elev_median,elev_min,elev_max,slope_mean,slope_median,slope_min,slope_max,cwc_area,ghi_area,gauge_elevation,dpsbar
+4049,17.9114,75.0075,17.91041,75.01042,649.3388734,615.0,470,1410,6.341406928,2.301902294,0.0,111.1158676,7200.0,6807.1,473,7.783270743

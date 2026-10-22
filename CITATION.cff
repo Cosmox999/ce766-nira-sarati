@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Please cite this repository when referring to the project analysis. Cite CAMELS-IND separately when using the source data."
+title: "Rainfall deficits and river-flow intermittency at Sarati"
+type: software
+authors:
+  - family-names: "Sonawane"
+    given-names: "Ganesh"
+repository-code: "https://github.com/Cosmox999/ce766-nira-sarati"
+date-released: 2026-10-22

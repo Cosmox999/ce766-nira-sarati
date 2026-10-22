@@ -1,0 +1,6 @@
+{
+  "data/raw/sarati_source/attributes_csv/camels_ind_name.csv": "85e566b6c3c59cae50e1112182e7311c8b657748f57af17fee017e3b5c082393",
+  "data/raw/sarati_source/attributes_csv/camels_ind_topo.csv": "02c2e1c7c64c7f5580ed4c5cad804aca5f5795b79f88783f4907f04ae027e0f9",
+  "data/raw/sarati_source/catchment_mean_forcings/04049.csv": "de0173346aea5f7efa70a09561cad5104ec1826859fd83675b0bd4ed4aaa1522",
+  "data/raw/sarati_source/streamflow_timeseries/streamflow_observed.csv": "089a3b1b26538ae5a10ec1cc9ccbac8b57c41766b3a70cba34e5639d8a601a6f"
+}

@@ -1,0 +1,25 @@
+{
+  "n_days": 10957,
+  "rainfall_missing": 0,
+  "flow_missing": 0,
+  "flow_valid": 10957,
+  "zero_days": 6984,
+  "nearzero_days": 7016,
+  "zero_fraction": 0.637400748380031,
+  "nearzero_fraction": 0.6403212558181984,
+  "mean_annual_rain_mm": 736.8509999999999,
+  "min_rain_HY": 2003,
+  "min_rain_mm": 325.93,
+  "max_rain_HY": 2009,
+  "max_rain_mm": 1267.23,
+  "longest_zero_run": {
+    "start": "2002-10-23",
+    "end": "2003-08-11",
+    "days": 293
+  },
+  "complete_flow_HYs": 30,
+  "full_record_flow_valid": 13169,
+  "full_record_days": 14976,
+  "analysis_first": "1981-06-01",
+  "analysis_last": "2011-05-31"
+}
