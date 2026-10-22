@@ -1,4 +1,5 @@
-"""Independent raw CSV verification of report statistics and SPI transformation."""
+"""Check the main results directly against the daily Sarati records."""
+# Author: Ganesh Sonawane
 import csv, datetime as dt, json
 from decimal import Decimal
 from pathlib import Path
@@ -45,8 +46,8 @@ with (results/'seasonal_metrics.csv').open(newline='') as f:
         volume=sum(vals)*Decimal(86400)/Decimal(1000000)
         assert abs(float(volume)-float(row['observed_volume_Mm3']))<1e-6
 
-# Rebuild reported September 2003 SPI windows without pandas rolling or
-# scipy.stats gamma/normal distribution wrappers. Check MLE score equation.
+# Recalculate September 2003 SPI directly from the monthly rainfall totals.
+# Check the gamma fit before converting the rainfall probability to SPI.
 fits=list(csv.DictReader((results/'spi_gamma_fits.csv').open()))
 monthly=list(csv.DictReader((results/'monthly_spi_and_flow.csv').open()))
 target=next(r for r in monthly if r['month']=='2003-09-01')

@@ -1,6 +1,5 @@
-"""Reproduce Sarati preliminary results from CAMELS-IND 2.2 station extracts.
-Run with Python 3, numpy, pandas, scipy, matplotlib. No simulated flow is used.
-"""
+"""Calculate rainfall, SPI and recorded zero-flow summaries for Sarati."""
+# Author: Ganesh Sonawane
 from pathlib import Path
 import json, hashlib
 import numpy as np
@@ -17,6 +16,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 P = pd.read_csv(RAW / 'catchment_mean_forcings/04049.csv')
 Q = pd.read_csv(RAW / 'streamflow_timeseries/streamflow_observed.csv', usecols=['year','month','day','4049'])
 for df in [P,Q]:
+    # Check the full daily date sequence before selecting the study period.
     df.index = pd.to_datetime(df[['year','month','day']])
     assert not df.index.duplicated().any()
     assert df.index.equals(pd.date_range('1980-01-01','2020-12-31'))
@@ -24,11 +24,12 @@ d = pd.DataFrame({'P_mm':P['prcp(mm/day)'], 'Q_m3s':Q['4049']})
 assert not (d[['P_mm','Q_m3s']] < 0).any().any(), 'Investigate negative/sentinel values'
 assert not np.isinf(d.to_numpy()).any()
 a = d.loc['1981-06-01':'2011-05-31'].copy()
+# Label each June-May hydrological year by its starting year.
 a['HY'] = a.index.year - (a.index.month < 6)
 a['season'] = np.select([a.index.month.isin([6,7,8,9]),a.index.month.isin([10,11]),a.index.month.isin([12,1,2])],['Jun-Sep','Oct-Nov','Dec-Feb'],default='Mar-May')
 assert len(a)==10957
 def longest(x):
-    # Missing or positive observations break recorded zero-flow runs.
+    # A positive value or missing observation ends a recorded zero-flow spell.
     flag = x.eq(0)
     return int(flag.groupby((~flag).cumsum()).sum().max())
 
@@ -50,11 +51,13 @@ for k in [3,6]:
     roll=monthly.P_mm.rolling(k,min_periods=k).sum()
     spi=pd.Series(np.nan,index=monthly.index)
     for m in range(1,13):
+        # Compare rainfall totals ending in the same calendar month.
         ref=roll.loc['1981-01-01':'2020-12-01']
         ref=ref[ref.index.month==m].dropna()
         pos=ref[ref>0]
         assert len(ref)==40 and len(pos)>10
         shape,loc,scale=stats.gamma.fit(pos,floc=0)
+        # Include zero totals separately from the gamma fit to positive totals.
         p0=float(ref.eq(0).mean())
         use=roll[roll.index.month==m].dropna()
         h=p0+(1-p0)*stats.gamma.cdf(use,shape,loc=0,scale=scale)
@@ -62,15 +65,15 @@ for k in [3,6]:
         fit_records.append(dict(scale_months=k,ending_month=m,n_reference=len(ref),zero_probability=p0,shape=shape,scale=scale))
     monthly[f'SPI{k}']=spi
 
-# Month-specific Spearman coefficients avoid pooling the seasonal cycle.
-# Positive lag: SPI at month t-lag is paired with flow fraction at month t.
+# Calculate correlations separately for each month to account for seasonality.
+# A positive lag pairs earlier rainfall SPI with the current flow fraction.
 correlations=[]
 for k in [3,6]:
     for lag in range(4):
         pair=monthly[[f'SPI{k}','zero_fraction','Q_n']].copy()
         pair['spi_lead']=pair[f'SPI{k}'].shift(lag)
         pair=pair.loc['1981-06-01':'2011-05-01']
-        # Complete observed months only; sensitivity to a 90% rule is future work.
+        # Keep only months with discharge recorded on every day.
         pair=pair[pair.Q_n.eq(pair.index.days_in_month)]
         for m in range(1,13):
             g=pair[pair.index.month==m][['spi_lead','zero_fraction']].dropna()
@@ -80,6 +83,7 @@ for k in [3,6]:
             correlations.append(dict(spi_scale=k,rainfall_lead_months=lag,flow_month=m,n=len(g),spearman_rho=rho))
 
 flag=a.Q_m3s.eq(0)
+# Allow these spells to continue across hydrological-year boundaries.
 runs=[]
 for _,g in a.groupby((~flag).cumsum()):
     z=g[g.Q_m3s.eq(0)]
@@ -97,7 +101,7 @@ a.to_csv(OUT/'sarati_analysis_daily.csv',index_label='date')
 hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in RAW.rglob('*') if p.is_file()}
 (OUT/'input_sha256.json').write_text(json.dumps(hashes,indent=2))
 
-# Preliminary output: rainfall seasonality and recorded zero-flow frequency.
+# Show the monthly pattern with June at the start of the axis.
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':9,'axes.spines.top':False,'axes.spines.right':False})
 fig,axs=plt.subplots(1,2,figsize=(7.0,1.8),layout='constrained')
 months=[6,7,8,9,10,11,12,1,2,3,4,5]

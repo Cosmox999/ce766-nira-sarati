@@ -1,55 +1,58 @@
 # Rainfall deficits and river-flow intermittency at Sarati
 
-**Author: Ganesh Sonawane**
+Author: Ganesh Sonawane
 
-CE 766 - Watershed Management
+This is my term project for CE 766, Watershed Management. I am studying the Nira River catchment upstream of Sarati in Maharashtra to see how rainfall deficits are associated with periods of recorded zero flow.
 
-This project examines rainfall variability and recorded zero-flow conditions in the Nira River catchment upstream of Sarati, Maharashtra. The study covers **1 June 1981 to 31 May 2011**, comprising 30 June-May hydrological years. The catchment is CAMELS-IND station **04049** (4049 in the discharge table), with a delineated area of 6,807.1 km2.
+The study covers June 1981-May 2011, giving 30 complete hydrological years. I am using CAMELS-IND station 04049, which appears as 4049 in the discharge file. The delineated catchment area is 6,807.1 km2.
 
-## Data and results
+## Work completed so far
 
-The [data folder](data/raw/sarati_source) contains the rainfall, observed-discharge and station-metadata extracts used by the code. The files are included so the calculations can be reproduced without downloading the full multi-catchment archive. Values, column names and missing cells have been preserved from the original dataset; only the required columns and Sarati metadata rows were selected.
+I have checked the daily rainfall and discharge records, calculated monthly and seasonal summaries, identified continuous zero-flow spells, and calculated SPI-3 and SPI-6. I have also made an initial set of rainfall-flow correlation calculations, but the uncertainty analysis is still pending.
 
-Original repository: [CAMELS-IND v2.2, Zenodo record 14999580](https://zenodo.org/records/14999580). Original archive: `CAMELS_IND_Catchments_Streamflow_Sufficient.zip`. See [data provenance and attribution](data/README.md) for the exact source files, units, licence and citation.
-
-Preliminary results:
+Both daily series are complete within the study period. The main results so far are:
 
 | Measure | Result |
 | --- | --- |
-| Calendar days in the study window | 10,957 |
-| Missing rainfall/discharge observations within the study window | 0 / 0 |
-| Recorded zero-discharge days | 6,984 (63.74%) |
+| Days covered | 10,957 |
+| Days with recorded zero discharge | 6,984 (63.74%) |
 | Days with discharge at or below 0.1 m3/s | 7,016 (64.03%) |
-| Recorded zero-flow fraction during March-May | 98.84% |
+| Zero-flow fraction during March-May | 98.84% |
 | Mean rainfall per hydrological year | 736.85 mm |
-| Fraction of rainfall falling in June-September | 79.26% |
-| Longest recorded zero-flow spell across the full window | 293 days, 23 October 2002-11 August 2003 |
+| Share of rainfall received during June-September | 79.26% |
+| Longest recorded zero-flow spell | 293 days, from 23 October 2002 to 11 August 2003 |
 
-![Mean monthly rainfall and recorded zero-flow frequency at Sarati](analysis/results/preliminary_figure.png)
+![Monthly rainfall and recorded zero-flow frequency at Sarati](analysis/results/preliminary_figure.png)
 
-Rainfall bars show monthly rainfall totals averaged over the 30-year study period. Zero-flow bars show the percentage of valid daily discharge observations recorded as zero for each calendar month. Months run from June to May.
+The rainfall bars are monthly totals averaged over the study period. The zero-flow bars show the percentage of valid daily discharge observations recorded as zero in each calendar month. The months run from June to May.
 
-## Reproduce the analysis
+## Data
 
-Use Python **3.11 or 3.12**. From the repository root:
+The [data folder](data/raw/sarati_source) contains the rainfall, observed discharge and station details used in the analysis. These are Sarati extracts from [CAMELS-IND v2.2](https://zenodo.org/records/14999580), taken from `CAMELS_IND_Catchments_Streamflow_Sufficient.zip`.
+
+I kept the original values and missing entries and selected the columns needed for this project. Missing discharge outside the study period remains missing. The [data notes](data/README.md) list the source files, units and attribution.
+
+## Running the scripts
+
+Use Python 3.11 or 3.12. From the repository folder, create a virtual environment:
 
 ```bash
 python -m venv .venv
 ```
 
-Activate the environment:
+Activate it in PowerShell:
 
 ```powershell
-# Windows PowerShell
 .venv\Scripts\Activate.ps1
 ```
 
+On Linux or macOS, use:
+
 ```bash
-# Linux or macOS
 source .venv/bin/activate
 ```
 
-Then run:
+Install the packages and run the analysis, followed by the checks:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -57,20 +60,19 @@ python analysis/preliminary_analysis.py
 python analysis/verify_results.py
 ```
 
-The first script recreates the tables and figure in [analysis/results](analysis/results). The second independently checks the principal reported statistics against the original daily values. GitHub Actions also runs these two commands.
+The first script writes the tables and figure to [analysis/results](analysis/results). The second checks the reported totals, seasonal measures, longest zero-flow spell and the September 2003 SPI values using a separate calculation. These commands also run through GitHub Actions when changes are pushed.
 
-## Methodology
+## A few points about the method
 
-- Check daily dates, duplicate dates, negative values, non-finite values and completeness. Retain missing discharge as missing. No simulated discharge is used.
-- Calculate monthly and seasonal rainfall totals, recorded zero-flow fractions, near-zero sensitivity, seasonal discharge volumes and continuous zero-flow spells.
-- Compute SPI-3 and SPI-6 from rolling rainfall totals. Fit gamma distributions with zero location to positive rainfall totals, separately for each calendar ending month, and account for the probability of a zero total. Use 1981-2020 ending months as the reference, with 1980 rainfall supplying antecedent months.
-- Calculate exploratory, calendar-month-specific Spearman correlations for rainfall leads of 0-3 months. These screening results have not yet received block-bootstrap confidence intervals or a multiple-comparison assessment.
+Hydrological years run from June to May. For example, HY 2003 means June 2003-May 2004. Zero-flow fractions use the number of valid discharge observations as the denominator.
 
-See [analysis notes](analysis/README.md) for metric definitions and verification details.
+SPI-3 and SPI-6 use three- and six-month rainfall totals. The gamma distributions are fitted separately for each ending calendar month, using 1981-2020 as the reference period. Rainfall from 1980 supplies the preceding months needed at the start of the reference period.
 
-## Interpretation and remaining work
+Rainfall-flow correlations are calculated separately for each calendar month, with rainfall leads of zero to three months. This avoids combining the usual seasonal cycle with year-to-year differences. More details are in the [analysis notes](analysis/README.md).
 
-Recorded zero discharge does not by itself establish that the entire river channel was dry or that rainfall deficits caused the condition. Gauge recording practices, upstream regulation and abstraction require further investigation. Gamma-fit adequacy, rainfall-deficit event summaries and hydrological-year block-bootstrap uncertainty remain part of the next stage. The project does not yet estimate the benefits of a reservoir operating intervention.
+## Next steps
+
+I still need to examine the reliability of the recorded zeros, check the SPI fits, summarize rainfall-deficit episodes and estimate uncertainty using hydrological-year block bootstrapping. Reservoir operation and abstraction may also affect discharge at Sarati. These results therefore describe the available records; they do not establish the cause of the zero-flow conditions or the benefit of a particular intervention.
 
 ## References
 

@@ -1,6 +1,6 @@
-# Data provenance and attribution
+# Data sources
 
-These are station-specific extracts of **CAMELS-IND version 2.2**, published on 13 March 2025 and accessed on 21 October 2026.
+The files in this folder are Sarati extracts from CAMELS-IND version 2.2. This version was published on 13 March 2025. I downloaded the source data on 21 October 2026.
 
 - Repository: https://zenodo.org/records/14999580
 - Version DOI: https://doi.org/10.5281/zenodo.14999580
@@ -9,11 +9,11 @@ These are station-specific extracts of **CAMELS-IND version 2.2**, published on 
 - Archive MD5 published by Zenodo and verified after download: `3993c25ba7d7b86df0541de91e094f39`
 - Dataset licence in the Zenodo record: [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
 
-The dataset is credited to **Nikunj K. Mangukiya, Kanneganti Bhargav Kumar, Pankaj Dey, Shailza Sharma, Vijaykumar Bejagam, Pradeep P. Mujumdar and Ashutosh Sharma**. Original rainfall observations are from IMD; observed discharge was compiled from CWC/India-WRIS by the dataset authors. Ganesh Sonawane is the author of this project, rather than the original hydrometeorological dataset.
+CAMELS-IND was compiled by Nikunj K. Mangukiya, Kanneganti Bhargav Kumar, Pankaj Dey, Shailza Sharma, Vijaykumar Bejagam, Pradeep P. Mujumdar and Ashutosh Sharma. The rainfall data come from IMD, and the observed discharge data were compiled from CWC/India-WRIS.
 
-## Included source extracts
+## Files used
 
-All paths below are relative to `raw/sarati_source/` and retain the original archive filenames.
+The paths below are inside `raw/sarati_source/`. I kept the original filenames so they can be matched to the source archive.
 
 | File | Selection | Units |
 | --- | --- | --- |
@@ -22,11 +22,11 @@ All paths below are relative to `raw/sarati_source/` and retain the original arc
 | `attributes_csv/camels_ind_name.csv` | Original row for gauge 4049 | Gauge identity and river information |
 | `attributes_csv/camels_ind_topo.csv` | Original row for gauge 4049 | Includes coordinates and catchment area |
 
-Daily files cover 1 January 1980-31 December 2020, including missing discharge outside the study window. Original numeric strings and empty cells were retained; unrelated columns and stations were omitted. CSV formatting was normalized to UTF-8 with LF line endings. No rainfall or discharge values were imputed, rounded again or replaced by LSTM estimates.
+The daily files cover 1 January 1980-31 December 2020. I selected the required columns and Sarati metadata rows and saved them as UTF-8 CSV files with LF line endings. The original numeric values and empty cells were kept. Missing discharge outside the study period was left missing, and the analysis uses observed discharge throughout.
 
-The delineated GHI catchment area is 6,807.1 km2; the metadata also contain a separate reported CWC area of 7,200 km2. This project uses the delineated area consistent with its proposal. Station 04049 in filenames is represented as 4049 in table columns.
+There are two catchment areas in the metadata: the delineated GHI area is 6,807.1 km2, while the reported CWC area is 7,200 km2. I use the delineated area, as in the proposal. Station 04049 in the filenames appears as 4049 in the table columns.
 
-`analysis/results/input_sha256.json` records hashes of the extracts used in the reproduced calculation. These hashes describe the selected files in this repository, rather than the larger original multi-station files.
+`analysis/results/input_sha256.json` contains the checksums for the extracts in this repository. The MD5 listed above is for the complete archive downloaded from Zenodo.
 
 ## Citation
 
