@@ -1,0 +1,1 @@
+PASS: source checksums, raw counts, all study SPI values, all 96 rainfall-flow rank pairs, constant-series handling, interval availability, seasonal mean volumes and baseline drought episodes.

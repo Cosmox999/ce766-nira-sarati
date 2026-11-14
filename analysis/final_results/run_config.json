@@ -1,0 +1,17 @@
+{
+  "seed": 7662026,
+  "bootstrap_repetitions": 10000,
+  "year_block_lengths": [
+    1,
+    2,
+    3
+  ],
+  "permutation_repetitions": 19999,
+  "gamma_fit_mc_repetitions": 999,
+  "spi_reference_bootstrap_repetitions": 2000,
+  "python": "3.12.3",
+  "numpy": "1.26.4",
+  "pandas": "2.2.2",
+  "scipy": "1.13.1",
+  "matplotlib": "3.9.0"
+}

@@ -8,3 +8,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 tmp/
+submission/
+output/
+analysis/build_final_submission.py
+requirements-submission.txt

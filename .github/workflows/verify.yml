@@ -23,3 +23,14 @@ jobs:
         run: python analysis/preliminary_analysis.py
       - name: Independently verify results
         run: python analysis/verify_results.py
+      - name: Check statistical and date-boundary behavior
+        run: python -m unittest discover -s tests -v
+      - name: Reproduce final analysis and simulations
+        run: python analysis/final_analysis.py
+      - name: Independently verify final results
+        run: python analysis/verify_final_results.py
+      - name: Save calculated analysis outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sarati-analysis-results
+          path: analysis/final_results/

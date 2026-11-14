@@ -2,80 +2,92 @@
 
 Author: Ganesh Sonawane
 
-This is my term project for CE 766, Watershed Management. I am studying the Nira River catchment upstream of Sarati in Maharashtra to see how rainfall deficits are associated with periods of recorded zero flow.
+This is my CE 766 Watershed Management project on the Nira River catchment upstream of Sarati, Maharashtra. I used rainfall and observed discharge to examine when rainfall deficits coincide with recorded zero flow. The study covers June 1981-May 2011: 30 complete hydrological years for CAMELS-IND station 04049, with a delineated catchment area of 6,807.1 km2.
 
-The study covers June 1981-May 2011, giving 30 complete hydrological years. I am using CAMELS-IND station 04049, which appears as 4049 in the discharge file. The delineated catchment area is 6,807.1 km2.
+## Analysis outputs
 
-## Work completed so far
+- [Rainfall and recorded flow intermittency](analysis/final_results/Figure_1_Rainfall_and_Intermittency.png)
+- [Lagged rainfall-flow associations](analysis/final_results/Figure_2_Lagged_Associations.png)
+- [Calculated tables and diagnostics](analysis/final_results)
+- [Method notes](analysis/README.md)
 
-I have checked the daily rainfall and discharge records, calculated monthly and seasonal summaries, identified continuous zero-flow spells, and calculated SPI-3 and SPI-6. I have also made an initial set of rainfall-flow correlation calculations, but the uncertainty analysis is still pending.
+The analysis includes drought-event summaries, uncertainty calculations and sensitivity checks for the same catchment and study period. The earlier outputs remain in `analysis/results`; the completed analysis outputs are in `analysis/final_results`.
 
-Both daily series are complete within the study period. The main results so far are:
+## What the results show
 
 | Measure | Result |
 | --- | --- |
-| Days covered | 10,957 |
-| Days with recorded zero discharge | 6,984 (63.74%) |
-| Days with discharge at or below 0.1 m3/s | 7,016 (64.03%) |
-| Zero-flow fraction during March-May | 98.84% |
-| Mean rainfall per hydrological year | 736.85 mm |
-| Share of rainfall received during June-September | 79.26% |
-| Longest recorded zero-flow spell | 293 days, from 23 October 2002 to 11 August 2003 |
+| Recorded zero-flow days | 6,984 of 10,957 days, or 63.74% |
+| March-May zero-flow fraction | 98.84% |
+| Fraction at or below 0.1 m3/s | 64.03% |
+| Mean annual catchment rainfall | 736.85 mm |
+| June-September share of rainfall | 79.26% |
+| Longest recorded zero-flow spell | 293 days, 23 October 2002-11 August 2003 |
+| Largest SPI-6 drought magnitude | May 2002-April 2004; 24 months; minimum SPI -2.78 |
+| Strongest rainfall-flow coefficient | September SPI-3 at zero lead: rho = -0.685 |
 
-![Monthly rainfall and recorded zero-flow frequency at Sarati](analysis/results/preliminary_figure.png)
+The September SPI-3 coefficient has a 95% year-bootstrap interval of -0.845 to -0.431. September SPI-6 gives rho = -0.663. These are the two associations that pass the primary Holm correction across 96 planned tests. None of the one- to three-month leads passes that correction. The strongest relationship uses rainfall ending in the discharge month, so it does not demonstrate advance-warning skill.
 
-The rainfall bars are monthly totals averaged over the study period. The zero-flow bars show the percentage of valid daily discharge observations recorded as zero in each calendar month. The months run from June to May.
+![Rainfall, zero-flow frequency and SPI-6 at Sarati](analysis/final_results/Figure_1_Rainfall_and_Intermittency.png)
 
-## Data
+![Month-specific rainfall-flow rank correlations](analysis/final_results/Figure_2_Lagged_Associations.png)
 
-The [data folder](data/raw/sarati_source) contains the rainfall, observed discharge and station details used in the analysis. These are Sarati extracts from [CAMELS-IND v2.2](https://zenodo.org/records/14999580), taken from `CAMELS_IND_Catchments_Streamflow_Sufficient.zip`.
+There is persistence between years. Sampling three-year blocks widens the September SPI-3 interval to -0.859 to -0.356. Permuting three-year blocks gives adjusted p-values of 0.048 and 0.057 for September SPI-3 and SPI-6. Those approximate values sit close to 0.05 and depend on the block assumption and Monte Carlo draws. I treat the associations as exploratory.
 
-I kept the original values and missing entries and selected the columns needed for this project. Missing discharge outside the study period remains missing. The [data notes](data/README.md) list the source files, units and attribution.
+## Reproduce the analysis
 
-## Running the scripts
-
-Use Python 3.11 or 3.12. From the repository folder, create a virtual environment:
+Use Python 3.11 or 3.12. From this folder:
 
 ```bash
 python -m venv .venv
 ```
 
-Activate it in PowerShell:
+Activate the environment in PowerShell:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-On Linux or macOS, use:
+On Linux or macOS:
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install the packages and run the analysis, followed by the checks:
+Then run:
 
 ```bash
 python -m pip install -r requirements.txt
 python analysis/preliminary_analysis.py
 python analysis/verify_results.py
+python -m unittest discover -s tests -v
+python analysis/final_analysis.py
+python analysis/verify_final_results.py
 ```
 
-The first script writes the tables and figure to [analysis/results](analysis/results). The second checks the reported totals, seasonal measures, longest zero-flow spell and the September 2003 SPI values using a separate calculation. These commands also run through GitHub Actions when changes are pushed.
+`final_analysis.py` reads the source extracts directly. It does not require the preliminary tables. The tests compare the two SPI implementations and check ties, lag alignment, event boundaries, constant samples and block construction.
 
-## A few points about the method
+The final calculation uses seed `7662026` with:
 
-Hydrological years run from June to May. For example, HY 2003 means June 2003-May 2004. Zero-flow fractions use the number of valid discharge observations as the denominator.
+- 10,000 paired year-bootstrap draws for each of three block lengths: one, two and three years;
+- 19,999 permutations for each of the independent-year and three-year-block tests;
+- 999 simulated and refitted samples for each of the 24 gamma-fit checks;
+- 2,000 resamples of the 40 reference years for SPI fitting uncertainty.
 
-SPI-3 and SPI-6 use three- and six-month rainfall totals. The gamma distributions are fitted separately for each ending calendar month, using 1981-2020 as the reference period. Rainfall from 1980 supplies the preceding months needed at the start of the reference period.
+These are statistical resampling calculations. I did not generate synthetic daily rainfall or flow, simulate reservoir operations, or estimate intervention benefits. [The method notes](analysis/README.md) describe the equations and assumptions. [run_config.json](analysis/final_results/run_config.json) records the actual counts and software versions.
 
-Rainfall-flow correlations are calculated separately for each calendar month, with rainfall leads of zero to three months. This avoids combining the usual seasonal cycle with year-to-year differences. More details are in the [analysis notes](analysis/README.md).
+GitHub Actions runs the analyses and checks after each push, then saves the calculated tables and figures as a workflow artifact.
 
-## Next steps
+## Data and interpretation
 
-I still need to examine the reliability of the recorded zeros, check the SPI fits, summarize rainfall-deficit episodes and estimate uncertainty using hydrological-year block bootstrapping. Reservoir operation and abstraction may also affect discharge at Sarati. These results therefore describe the available records; they do not establish the cause of the zero-flow conditions or the benefit of a particular intervention.
+The [input files](data/raw/sarati_source) are Sarati extracts from [CAMELS-IND v2.2](https://doi.org/10.5281/zenodo.14999580). Rainfall is the catchment average of IMD's 0.25-degree daily grid. Discharge is the observed CWC/India-WRIS gauge series, not the separate LSTM prediction product. The [data notes](data/README.md) identify the files and checksums.
+
+A complete compiled series does not establish that the entire river channel was dry. Release, diversion, abstraction and gauge-quality records were unavailable in this analysis. The findings can guide seasonal monitoring, but an operational release rule needs those records and testing on independent years. The proposed monthly SPI review trigger is unvalidated.
+
+The final code preserves the source rainfall precision before ranking, removing floating-point differences between equal totals. Three exploratory dry-season correlations change slightly. The previously reported summary statistics and main September results remain unchanged.
 
 ## References
 
-1. Mangukiya, N. K., et al. (2025). *CAMELS-IND: hydrometeorological time series and catchment attributes for 472 catchments in Peninsular India*, version 2.2. Zenodo. https://doi.org/10.5281/zenodo.14999580
-2. Mangukiya, N. K., et al. (2025). CAMELS-IND: hydrometeorological time series and catchment attributes for 228 catchments in Peninsular India. *Earth System Science Data*, 17, 461-491. https://doi.org/10.5194/essd-17-461-2025
-3. World Meteorological Organization (2012). *Standardized Precipitation Index User Guide* (M. Svoboda, M. Hayes and D. Wood), WMO-No. 1090. [Guide](https://www.droughtmanagement.info/literature/WMO_standardized_precipitation_index_user_guide_en_2012.pdf).
+1. Mangukiya, N. K., et al. (2025). CAMELS-IND: hydrometeorological time series and catchment attributes for 228 catchments in Peninsular India. *Earth System Science Data*, 17, 461-491. https://doi.org/10.5194/essd-17-461-2025
+2. Mangukiya, N. K., et al. (2025). *CAMELS-IND: hydrometeorological time series and catchment attributes for 472 catchments in Peninsular India*, version 2.2. Zenodo. https://doi.org/10.5281/zenodo.14999580
+3. World Meteorological Organization (2012). *Standardized Precipitation Index User Guide*, WMO-No. 1090. [Guide](https://www.droughtmanagement.info/literature/WMO_standardized_precipitation_index_user_guide_en_2012.pdf).
