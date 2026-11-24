@@ -1,0 +1,26 @@
+{
+  "central_assumptions": {
+    "capacity_Mm3": 10.0,
+    "capture_fraction": 0.1,
+    "target_m3s": 1.0,
+    "bypass_floor_m3s": 1.0,
+    "intake_limit_m3s": 5.0,
+    "release_limit_m3s": 2.0,
+    "full_pool_mean_depth_m": 10.0,
+    "area_exponent": 0.6666666666666666,
+    "seepage_fraction_per_day": 0.001,
+    "delivery_efficiency": 0.9,
+    "evaporation_factor": 1.0,
+    "pet_source": "Singer",
+    "initial_fraction": 0.0
+  },
+  "capture_season": "June-September",
+  "release_season": "October-May",
+  "timestep_days": 1,
+  "ensemble": "36 equally unweighted combinations per design; min-max ranges have no probability interpretation",
+  "control_volume": "Diversion junction and new off-channel storage just downstream of the Sarati gauge",
+  "source_flow": "Observed regulated Sarati flow held fixed as upstream boundary; no extra catchment runoff is added",
+  "step_order": "diversion; wetted area; rain; evaporation; seepage; release; spill",
+  "area_rule": "A=(K/10m)*(S_after_diversion/K)^(2/3); evaluated once per step",
+  "caveat": "Uncalibrated hypothetical geometry, thresholds and losses; results are conditional screening, not a reservoir design"
+}

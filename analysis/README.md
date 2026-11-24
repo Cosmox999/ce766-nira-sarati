@@ -1,4 +1,4 @@
-# Analysis notes
+# Historical analysis notes
 
 Author: Ganesh Sonawane
 
@@ -84,4 +84,4 @@ Seed 7662026 supplies separate child random streams for association and gamma ca
 
 `verify_final_results.py` derives all 96 coefficients from raw rainfall totals using Decimal arithmetic, independently of fitted SPI. It also checks source hashes, all study SPI values through the incomplete-gamma function and a separate normal inverse, seasonal volumes, event magnitudes and interval availability.
 
-The candidate lever is a monthly review of storage, demand and releases if SPI-3 reaches -1. The study does not estimate its benefit, cost or optimal threshold. Operational release rules require storage/release, diversion, abstraction, demand and gauge-quality data plus an action-to-outcome model. Recorded zeros need independent channel checks. Catchment-mean rainfall and omission of evapotranspiration limit local interpretation.
+This historical analysis provides the rainfall/flow context. The later storage-intervention extension is documented in [water_budget_methods.md](water_budget_methods.md), with explicit action-to-outcome equations and daily water balances. The historical correlations alone do not establish intervention benefits. Recorded zeros still require independent channel checks.

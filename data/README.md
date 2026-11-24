@@ -30,6 +30,8 @@ There are two catchment areas in the metadata: the delineated GHI area is 6,807.
 
 ## Citation
 
+The additional `raw/water_budget_forcings/04049.csv` retains rainfall, Singer PET, GLEAM PET and GLEAM AET columns from the same original forcing file. `provenance.json` records the source member and extract hashes. No values were filled or changed. These are area-weighted daily catchment averages. The intervention analysis uses June 1981-May 2011, when all four series are complete. PET is a proxy for open-water evaporation, tested across products and multipliers; it is not a measured reservoir evaporation series. AET is used only for the separate catchment-budget diagnostic.
+
 Mangukiya, N. K., et al. (2025). *CAMELS-IND: hydrometeorological time series and catchment attributes for 472 catchments in Peninsular India* (version 2.2) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.14999580
 
 Associated paper: Mangukiya, N. K., et al. (2025). CAMELS-IND: hydrometeorological time series and catchment attributes for 228 catchments in Peninsular India. *Earth System Science Data*, 17, 461-491. https://doi.org/10.5194/essd-17-461-2025

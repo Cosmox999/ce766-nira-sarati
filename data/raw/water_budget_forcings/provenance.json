@@ -1,0 +1,18 @@
+{
+  "source_doi": "10.5281/zenodo.14999580",
+  "version": "2.2",
+  "archive": "CAMELS_IND_Catchments_Streamflow_Sufficient.zip",
+  "archive_member": "catchment_mean_forcings/04049.csv",
+  "member_sha256": "db5917bed1586d958888a558994357bf0c1908954f85f1a7b6e8748ae32389ef",
+  "extract_sha256": "2d8d47aa6bd95c91c29e6ed5d22c8708e1c48e6c1b643b5bc4ecf617d09edc86",
+  "columns": [
+    "year",
+    "month",
+    "day",
+    "prcp(mm/day)",
+    "pet(mm/day)",
+    "pet_gleam(mm/day)",
+    "aet_gleam(mm/day)"
+  ],
+  "note": "Original numeric text and missing entries retained; column subset only."
+}

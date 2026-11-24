@@ -1,0 +1,1 @@
+PASS: source hashes; daily reservoir and combined-system closure for baseline and all nine nominal runs; continuous carryover; independent reconstruction of every central-run day; 324 ensemble constraints; 270 annual budgets.
